@@ -1,0 +1,12 @@
+packages = ["git", "vim", "openssh"]
+
+# [[users]]
+# name = "tayler"
+# shell = "/bin/ash"
+# groups = ["wheel"]
+
+# [services]
+# sshd = { enabled = true, running = true }
+
+# [networking.interfaces]
+# eth0 = { ip = "192.168.1.10/24" }
