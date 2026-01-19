@@ -1,6 +1,7 @@
 pub mod modules;
 
-use modules::reconcilers;
+use modules::declaration_trait::{Declaration, reconcile};
+use modules::declarations::packages::PackagesDeclaration;
 
 use clap::{Parser, Subcommand};
 use modules::config::Config;
@@ -30,30 +31,28 @@ enum Commands {
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let cli = Cli::parse();
+    let config_path = match &cli.command {
+        Commands::Apply { config, .. } => config,
+        Commands::Diff { config } => config,
+    };
+    let config_str = fs::read_to_string(config_path)?;
+    let config: Config = toml::from_str(&config_str)?;
 
     match cli.command {
         Commands::Apply {
-            config: path,
+            config: _path,
             dry_run,
         } => {
-            let config_str = fs::read_to_string(path)?;
-            let config: Config = toml::from_str(&config_str)?;
-
-            reconcilers::packages::reconcile_packages(&config.packages, dry_run)?;
-            // reconcilers::users::reconcile_users(&config.users, dry_run)?;
-            // reconcilers::services::reconcile_services(&config.services, dry_run)?;
-            // Call others...
-
-            if !dry_run {
-                // Optional: Git commit if repo set up
-                // Command::new("git").args(["add", "."]).output()?;
-                // Command::new("git")
-                //     .args(["commit", "-m", "Applied declarative config"])
-                //     .output()?;
-            }
+            reconcile(&PackagesDeclaration, &config.packages, dry_run)?;
         }
-        Commands::Diff { config: path } => {
+
+        Commands::Diff { config: _path } => {
             // Similar, but only print diffs, no apply
+            // Similar: Get current, compute diff, print for each
+            let packages_current = PackagesDeclaration.get_current()?;
+            let packages_diff =
+                PackagesDeclaration.compute_diff(&packages_current, &config.packages);
+            println!("Packages Diff: {:?}", packages_diff);
         }
     }
 

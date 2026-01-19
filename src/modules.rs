@@ -1,2 +1,4 @@
 pub mod config;
-pub mod reconcilers;
+pub mod declaration_trait;
+pub mod declarations;
+pub mod error;
