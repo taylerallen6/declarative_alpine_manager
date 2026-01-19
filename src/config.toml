@@ -1,4 +1,17 @@
-packages = ["git", "vim", "openssh"]
+packages = [
+  "openssl",
+  "doas",
+  "linux-lts",
+  "alpine-base",
+  "busybox-mdev-openrc",
+  "e2fsprogs",
+  "linux-firmware-none",
+  "syslinux",
+
+  "git",
+  "vim",
+  "openssh"
+]
 
 # [[users]]
 # name = "tayler"
