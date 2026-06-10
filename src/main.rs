@@ -3,12 +3,30 @@ pub mod modules;
 use modules::declaration_trait::{Declaration, reconcile};
 use modules::declarations::packages::PackagesDeclaration;
 
+use clap::builder::styling::{AnsiColor, Effects, Styles};
 use clap::{Parser, Subcommand};
 use modules::config::Config;
 use std::fs;
 
+fn get_styles() -> Styles {
+    Styles::styled()
+        .header(AnsiColor::Green.on_default().effects(Effects::BOLD))
+        .usage(AnsiColor::Green.on_default().effects(Effects::BOLD))
+        .literal(AnsiColor::BrightCyan.on_default().effects(Effects::BOLD))
+        .placeholder(AnsiColor::Cyan.on_default())
+        .error(AnsiColor::Red.on_default().effects(Effects::BOLD))
+    // Add .valid(), .invalid(), etc. as needed
+}
+
 #[derive(Parser)]
-#[command(name = "declarative-alpine")]
+// #[command(name = "declarative-alpine")]
+#[command(
+    name = "declarative-alpine",
+    // version,
+    // about,
+    styles = get_styles(),
+    color = clap::ColorChoice::Auto
+)]
 struct Cli {
     #[command(subcommand)]
     command: Commands,
